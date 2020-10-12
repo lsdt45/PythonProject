@@ -22,21 +22,30 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         mySet = MySettings()
         isRadioBt = self.radioButton.isChecked()
         if isRadioBt == 1:
-            mySet.WriteSettings('./Project.ini', '/RadioButton/RB', 0)
+            mySet.WriteSettings('./Project.ini', '/Settings/bit', 0)
         else:
-            mySet.WriteSettings('./Project.ini', '/RadioButton/RB', 1)
+            mySet.WriteSettings('./Project.ini', '/Settings/bit', 1)
 
     def Process(self):  # 主处理函数
         mySet = MySettings()
-        value_list = mySet.ReadSettings('./Project.ini', '/Project')  # 读取配置文件信息
+        value_list = mySet.ReadSettings('./Project.ini', '/Options')  # 读取配置文件信息
         for i in value_list:  # 循环添加组合框项目
             self.comboBox.addItem(i)
         self.SetButtonGP()
-        isRadioBt = mySet.ReadSettings('./Project.ini', '/RadioButton')
+        isRadioBt = mySet.ReadSettings('./Project.ini', '/Settings/bit')
+        debugValue = mySet.ReadSettings('./Project.ini', '/Settings/debug')
+
+        # 设置位数
         if int(isRadioBt) == 0:
             self.radioButton.setChecked(True)
         else:
             self.radioButton_2.setChecked(True)
+
+        # 设置debug模式
+        if int(debugValue) == 0:
+            self.checkBox.setChecked(False)
+        else:
+            self.checkBox.setChecked(True)
 
 
 # 读写配置文件
@@ -52,7 +61,7 @@ class MySettings:
             settings = QSettings(path, QSettings.IniFormat)  # ini文件格式
             settings.beginGroup(user_key)  # 读取所有键
             user_childKey = settings.childKeys()
-            if user_key == '/Project':
+            if user_key == '/Options':
                 for i in user_childKey:  # 读取所有值
                     self.user_valueList.append(settings.value(i))
                 return self.user_valueList

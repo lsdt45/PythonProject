@@ -326,19 +326,6 @@
       <string>Uninstall</string>
      </property>
     </widget>
-    <widget class="QCheckBox" name="checkBox_3">
-     <property name="geometry">
-      <rect>
-       <x>240</x>
-       <y>20</y>
-       <width>71</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Debug</string>
-     </property>
-    </widget>
     <widget class="QComboBox" name="comboBox_3">
      <property name="geometry">
       <rect>
@@ -359,7 +346,40 @@
       </rect>
      </property>
      <property name="text">
-      <string>Project:</string>
+      <string>Model:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_7">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>90</y>
+       <width>50</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Port:</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="comboBox_4">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>90</y>
+       <width>111</width>
+       <height>22</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="lineEdit_4">
+     <property name="geometry">
+      <rect>
+       <x>220</x>
+       <y>90</y>
+       <width>171</width>
+       <height>20</height>
+      </rect>
      </property>
     </widget>
    </widget>
