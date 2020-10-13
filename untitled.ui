@@ -7,11 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>472</width>
-    <height>640</height>
+    <height>580</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>DriverTool</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QGroupBox" name="groupBox">
@@ -37,6 +37,12 @@
        <width>231</width>
        <height>20</height>
       </rect>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::LeftToRight</enum>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
     <widget class="QToolButton" name="toolButton">
@@ -78,14 +84,14 @@
     <widget class="QLabel" name="label_2">
      <property name="geometry">
       <rect>
-       <x>9</x>
+       <x>32</x>
        <y>30</y>
-       <width>71</width>
+       <width>51</width>
        <height>20</height>
       </rect>
      </property>
      <property name="text">
-      <string>ドライバー:</string>
+      <string>Driver:</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_3">
@@ -134,15 +140,15 @@
       </rect>
      </property>
      <property name="text">
-      <string>オプション</string>
+      <string>Option</string>
      </property>
     </widget>
    </widget>
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>230</x>
-      <y>560</y>
+      <x>270</x>
+      <y>510</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -154,8 +160,8 @@
    <widget class="QPushButton" name="pushButton_2">
     <property name="geometry">
      <rect>
-      <x>310</x>
-      <y>560</y>
+      <x>350</x>
+      <y>510</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -246,7 +252,7 @@
      </rect>
     </property>
     <property name="title">
-     <string>オプション</string>
+     <string>Option</string>
     </property>
     <widget class="QRadioButton" name="radioButton">
      <property name="geometry">
@@ -298,7 +304,7 @@
      </rect>
     </property>
     <property name="title">
-     <string>オプション</string>
+     <string>Option</string>
     </property>
     <widget class="QRadioButton" name="radioButton_5">
      <property name="geometry">
