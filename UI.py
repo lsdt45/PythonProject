@@ -31,15 +31,23 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def iniSettings(self):
 
         mySet = MySettings()
-        value_list = mySet.ReadSettings('./Project.ini', '/Options')  # 读取配置文件信息
-        for i in value_list:  # 循环添加组合框项目
+        project_list = mySet.ReadSettings('./Project.ini', '/Project', 1)  # 读取配置文件信息
+        model_list = mySet.ReadSettings('./Project.ini', '/Model', 1)
+
+        for i in project_list:  # 循环添加组合框项目
             self.comboBox.addItem(i)
+        for i in model_list:  # 循环添加组合框项目
+            self.comboBox_2.addItem(i)
+
         self.SetButtonGP()
         isRadioBt = mySet.ReadSettings('./Project.ini', '/Settings/bit')
         debugValue = mySet.ReadSettings('./Project.ini', '/Settings/debug')
         WDKpath = mySet.ReadSettings('./Project.ini', '/Path/WDK')
         driverPath = mySet.ReadSettings('./Project.ini', '/Path/driver')
         infPath = mySet.ReadSettings('./Project.ini', '/Path/INF')
+
+
+
 
         # 设置位数
         if isRadioBt == 0:
@@ -84,15 +92,16 @@ class MySettings:
         self.user_valueList = []
         self.user_value = 0
 
-    def ReadSettings(self, path, user_key):
+    def ReadSettings(self, path, user_key, settingType=0):
         if path is None:
             return False
         else:
             self.settings = QSettings(path, QSettings.IniFormat)  # ini文件格式
 
-            if user_key == '/Options':
+            if settingType == 1:
                 self.settings.beginGroup(user_key)  # 读取所有键
                 user_childKey = self.settings.childKeys()
+                self.user_valueList = [] # 清空之前的列表
                 for i in user_childKey:  # 读取所有值
                     self.user_valueList.append(self.settings.value(i))
                 self.settings.endGroup()
