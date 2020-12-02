@@ -167,7 +167,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>閉じる</string>
+     <string>Close</string>
     </property>
    </widget>
    <widget class="QGroupBox" name="groupBox_2">
@@ -293,14 +293,27 @@
       <string>Debug</string>
      </property>
     </widget>
+    <widget class="QPushButton" name="pushButton_4">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>50</y>
+       <width>75</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Compile</string>
+     </property>
+    </widget>
    </widget>
    <widget class="QGroupBox" name="groupBox_4">
     <property name="geometry">
      <rect>
       <x>12</x>
-      <y>361</y>
+      <y>350</y>
       <width>421</width>
-      <height>141</height>
+      <height>151</height>
      </rect>
     </property>
     <property name="title">
@@ -386,6 +399,19 @@
        <width>171</width>
        <height>20</height>
       </rect>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_5">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>120</y>
+       <width>75</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Install</string>
      </property>
     </widget>
    </widget>
