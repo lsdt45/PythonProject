@@ -24,7 +24,7 @@ class Ui_MainWindow(object):
         self.lineEdit = QtWidgets.QLineEdit(self.groupBox)
         self.lineEdit.setGeometry(QtCore.QRect(90, 30, 231, 20))
         self.lineEdit.setLayoutDirection(QtCore.Qt.LeftToRight)
-        self.lineEdit.setAlignment(QtCore.Qt.AlignCenter)
+        self.lineEdit.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
         self.lineEdit.setObjectName("lineEdit")
         self.toolButton = QtWidgets.QToolButton(self.groupBox)
         self.toolButton.setGeometry(QtCore.QRect(340, 30, 37, 18))
