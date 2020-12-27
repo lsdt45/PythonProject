@@ -1,0 +1,105 @@
+!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>dlg_color_superlong.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+	<body onload="prettyPrint()">
+        <h4></h4>
+		<pre class="prettyprint lang-cpp linenums">
+		
+		
+VOID IconAdd(LPARAM lp, PCBUSERDATA pUserData,int *CtrlID, int *StrID, WORD CtrlNum)
+<span style = "background-color:#dfd">{
+	LPDRAWITEMSTRUCT lpdis = (LPDRAWITEMSTRUCT)lp;</span>
+	size_t	pcch;
+	HBITMAP hbmIcon;
+	HBITMAP hbmMask;
+	BITMAP	bitmap;
+	long	CX_BITMAP;
+	long	CY_BITMAP;
+	//½¾êR{{bNXàe\¦sS LJW.20200815 RM#129440
+	//WCHAR svColorMode[32] = L"";
+<span style = "background-color:#dfd">	WCHAR svColorMode[SMALL_BUFF_SZ] = L"";</span>
+	TEXTMETRIC	tm;
+	COLORREF clrForeground;
+	COLORREF clrBackground;
+	INT x, y, i;
+
+<span style = "background-color:#dfd">	if (lpdis-&gt;itemID == -1)            // empty item </span>
+<span style = "background-color:#fdd">		return ;</span>
+<span style = "background-color:#dfd">	HDC hdc = CreateCompatibleDC(lpdis-&gt;hDC);
+	if (hdc == NULL)</span>
+<span style = "background-color:#fdd">		return;</span>
+<span style = "background-color:#dfd">	if ((WORD)(lpdis-&gt;itemID) &lt; (CtrlNum - 1))</span>
+	{
+<span style = "background-color:#dfd">		hbmIcon = LoadBitmap(pUserData-&gt;hRes, (LPCTSTR)CtrlID[lpdis-&gt;itemID]);</span>
+		//LoadStringEx(pUserData-&gt;hRes, StrID[lpdis-&gt;itemID], svColorMode, 32); //½¾êR{{bNXàe\¦sS LJW.20200815 RM#129440
+<span style = "background-color:#dfd">		LoadStringEx(pUserData-&gt;hRes, StrID[lpdis-&gt;itemID], svColorMode, SMALL_BUFF_SZ);</span>
+	}
+<span style = "background-color:#dfd">	else</span>
+	{
+<span style = "background-color:#fdd">		hbmIcon = LoadBitmap(ghInstance, (LPCTSTR)CtrlID[lpdis-&gt;itemID]);</span>
+		//LoadStringEx(pUserData-&gt;hRes, StrID[lpdis-&gt;itemID], svColorMode, 32);
+<span style = "background-color:#fdd">		LoadStringEx(ghInstance, StrID[lpdis-&gt;itemID], svColorMode, SMALL_BUFF_SZ);</span>
+	}
+	
+	//hbmIcon = LoadBitmap(pUserData-&gt;hRes, (LPCTSTR)CtrlID[lpdis-&gt;itemID]);
+<span style = "background-color:#dfd">	GetObject(hbmIcon, sizeof(BITMAP), &amp;bitmap);
+	CX_BITMAP = bitmap.bmWidth;
+	CY_BITMAP = bitmap.bmHeight;
+	hbmMask = CreateBitmap(CX_BITMAP, CY_BITMAP, 1, 1, NULL);</span>
+	// The colors depend on whether the item is selected. 
+<span style = "background-color:#dfd">	if(lpdis-&gt;itemState &amp; ODS_DISABLED)</span>
+		clrForeground = SetTextColor(lpdis-&gt;hDC,
+			GetSysColor(lpdis-&gt;itemState &amp; ODS_SELECTED ?
+<span style = "background-color:#fdd">				COLOR_HIGHLIGHTTEXT : COLOR_GRAYTEXT));
+	else</span>
+		clrForeground = SetTextColor(lpdis-&gt;hDC,
+			GetSysColor(lpdis-&gt;itemState &amp; ODS_SELECTED ?
+<span style = "background-color:#dfd">				COLOR_HIGHLIGHTTEXT : COLOR_WINDOWTEXT));</span>
+	clrBackground = SetBkColor(lpdis-&gt;hDC,
+		GetSysColor(lpdis-&gt;itemState &amp; ODS_SELECTED ?
+<span style = "background-color:#dfd">			COLOR_HIGHLIGHT : COLOR_WINDOW));</span>
+	// Calculate the vertical and horizontal position. 
+<span style = "background-color:#dfd">	GetTextMetrics(lpdis-&gt;hDC, &amp;tm);</span>
+	y = (lpdis-&gt;rcItem.bottom + lpdis-&gt;rcItem.top -
+<span style = "background-color:#dfd">		tm.tmHeight) / 2;
+	x = LOWORD(GetDialogBaseUnits()) / 4;</span>
+	
+	// Get and display the text for the list item. 
+<span style = "background-color:#dfd">	pcch = lstrlenW(svColorMode);</span>
+	ExtTextOut(lpdis-&gt;hDC, CX_BITMAP + 2 * x, y,
+		ETO_CLIPPED | ETO_OPAQUE, &amp;lpdis-&gt;rcItem,
+<span style = "background-color:#dfd">		svColorMode, pcch, NULL);</span>
+	// Restore the previous colors. 
+<span style = "background-color:#dfd">	SetTextColor(lpdis-&gt;hDC, clrForeground);
+	SetBkColor(lpdis-&gt;hDC, clrBackground);</span>
+	// Show the icon. 
+<span style = "background-color:#dfd">	SelectObject(hdc, hbmMask);</span>
+	TransparentBlt(lpdis-&gt;hDC, x, lpdis-&gt;rcItem.top + 1,
+<span style = "background-color:#dfd">		CX_BITMAP, CY_BITMAP, hdc, 0, 0, CX_BITMAP, CY_BITMAP, SRCAND);
+	SelectObject(hdc, hbmIcon);</span>
+	TransparentBlt(lpdis-&gt;hDC, x, lpdis-&gt;rcItem.top + 1,
+<span style = "background-color:#dfd">		CX_BITMAP, CY_BITMAP, hdc, 0, 0, CX_BITMAP, CY_BITMAP, SRCPAINT);
+	DeleteDC(hdc);</span>
+	// If the item has the focus, draw focus rectangle. 
+<span style = "background-color:#dfd">	if (lpdis-&gt;itemState &amp; ODS_FOCUS)</span>
+<span style = "background-color:#fdd">		DrawFocusRect(lpdis-&gt;hDC, &amp;lpdis-&gt;rcItem);</span>
+<span style = "background-color:#dfd">	if (hbmIcon)
+		DeleteObject(hbmIcon);
+	if (hbmMask)
+		DeleteObject(hbmMask);</span>
+
+<span style = "background-color:#dfd">}</span>
+
+
+
+
+
+
+</pre>
+	</body>
+</html>
