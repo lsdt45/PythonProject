@@ -6,7 +6,9 @@ from PyQt5.Qt import *
 from PyQt5.QtCore import *
 from pathlib import Path
 import os
-
+import re
+import sys
+import win32print
 
 # noinspection SpellCheckingInspection
 class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
@@ -18,8 +20,6 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.printerName = ''
         self.modelName = []
         self.process()
-        self.pushButton_5.clicked.connect(self.DriverInstall)
-        # self.pushButton_3.clicked.connect(lambda: self.ReadInf(self.infPath))
 
     def SetButtonGP(self):  # 设置按钮组
         btGroup = QButtonGroup(self)
@@ -38,7 +38,6 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         for i in project_list:  # 循环添加组合框项目
             self.comboBox.addItem(i)
-
 
         self.SetButtonGP()
         isRadioBt = mySet.ReadSettings('./Project.ini', '/Settings/bit')
@@ -81,16 +80,15 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.radioButton_6.setChecked(True)
 
         # 设置地址
-        self.packPath = self.lineEdit_3.text()
-        path = Path(self.packPath)
-        infPath = path.glob('*.inf')
-        for i in infPath:
-            if i is not None:
-                self.infPath = i
+        self.GetInfPath()
+        # self.packPath = self.lineEdit_3.text()
+        # path = Path(self.packPath)
+        # infPath = path.glob('*.inf')
+        # for i in infPath:
+        #     if i is not None:
+        #         self.infPath = i
         # 读取INF的model名
         self.ReadInf(self.infPath)
-        for i in self.modelName:  # 循环添加组合框项目
-            self.comboBox_2.addItem(i)
         # 设置Project保存项
         self.comboBox.setCurrentIndex(int(pj_pos))
 
@@ -130,11 +128,24 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # rundll32 printui.dll,PrintUIEntry /y /n %s  && \
         # ''' % (PrintName, infPath, PrintName, PrintName)
         self.printerName = self.comboBox_2.itemText(self.comboBox_2.currentIndex())  # 当前选择的printer名
+        if self.radioButton_5.isChecked():
+            cmd = '''rundll32 printui.dll,PrintUIEntry /if /b "%s" /f %s /r "lpt1:" /m "%s" \
+                   ''' % (self.printerName, self.infPath, self.printerName)
+        else:
+            cmd = '''rundll32 printui.dll,PrintUIEntry /n "%s" /dl && \
+            rundll32 printui.dll,PrintUIEntry /m "%s" /dd
+                               ''' % (self.printerName, self.printerName)
         # 执行cmd
-        cmd = '''rundll32 printui.dll,PrintUIEntry /if /b "%s" /f %s /r "lpt1:" /m "%s" \
-        ''' % (self.printerName, self.infPath, self.printerName)
+
         # print(cmd)
-        result = os.popen(cmd, 'r')
+        if cmd:
+            result = os.popen(cmd, 'r')
+            if result:
+                QMessageBox.warning(self, 'Warning', 'Success')
+            else:
+                QMessageBox.warning(self, 'Warning', 'operation failed')
+        else:
+            print('invalid cmd')
         # cmd = result.read()
         # QMessageBox.warning(self, 'Warning', cmd)
 
@@ -145,30 +156,66 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # print(cmd)
         # --------------Test---------------
 
-    #从INF文件中读取所有的model名
+    # 从INF文件中读取所有的model名
     def ReadInf(self, infPath):
         if infPath is None:
             return False
         modelLine = []
-        file = open(infPath, 'r')
+        self.modelName = []
+        try:
+            file = open(infPath, 'r')
+        except IOError:
+            QMessageBox.warning(self, 'Warning', '读取INF路径失败')
+            return
+        pattern_list = "(PS\")|(PCL6\")|(PS\))|(PCL6\))"
+        pattern = re.compile(pattern_list)  # 利用正则寻找model名
         for line in file.readlines():
-            if ('PS"' or 'PCL"') in line:
+            result = re.search(pattern, line)
+            if result:
                 modelLine.append(line)
         file.close()
-        # print(self.modelName)
         for i in range(len(modelLine)):
-            tempName = str(modelLine[i]).split('"')
+            tempName = str(modelLine[i]).split('"')  # 筛选model名
             if tempName[1] in self.modelName:
                 continue
             else:
-                self.modelName.append(tempName[1])
+                self.modelName.append(tempName[1])  # 将获取的model名存入列表
 
+        self.comboBox_2.clear()  # 添加前清空组合框内容
+        for i in self.modelName:  # 循环添加组合框项目
+            self.comboBox_2.addItem(i)
         print(self.modelName)
+        print_name_tuple = win32print.EnumPrinters(win32print.PRINTER_ENUM_NAME, None, 4)
+        for i in range(len(print_name_tuple)):
+            print(print_name_tuple[i].get("pPrinterName"))
 
+    # 获取INF的地址
+    def GetInfPath(self):
+        temp = None
+        self.packPath = self.lineEdit_3.text()
+        path = Path(self.packPath)
+        infPath = path.glob('*.INF')
+
+        for temp in infPath:
+            if temp is not None:
+                self.infPath = temp  # 重新设置地址
+
+        # 判断地址是否为空，如果是，则将地址和组合框置空
+        if temp is None:
+            self.infPath = 'None'
+            self.comboBox_2.clear()
+
+    # 各种事件的触发
+    def EventTrigger(self):
+        # 文本改变时重新读取Inf文件
+        self.lineEdit_3.editingFinished.connect(self.GetInfPath)
+        self.lineEdit_3.editingFinished.connect(lambda: self.ReadInf(self.infPath))
+        # Install按钮被按下时进行驱动安装
+        self.pushButton_5.clicked.connect(self.DriverInstall)
 
     def process(self):  # 主处理函数
         self.iniSettings()  # 读取设置
-
+        self.EventTrigger()  # 事件触发
 
 
 # 读写配置文件
@@ -195,14 +242,13 @@ class MySettings:
                 self.user_value = self.settings.value(user_key)
                 return self.user_value
 
+    # 将设置写入ini文件
     def WriteSettings(self, path, user_key, user_value):
         settings = QSettings(path, QSettings.IniFormat)
         settings.setValue(user_key, user_value)
 
 
 if __name__ == "__main__":
-    import sys
-
     app = QtWidgets.QApplication(sys.argv)
     ui = MyWindow()
     ui.show()

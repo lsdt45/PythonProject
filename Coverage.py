@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 
 list_green = []
 list_red = []
-soup = BeautifulSoup(open('Init_ColorDlg.html'), features='html.parser')
+soup = BeautifulSoup(open('OemUI.html', 'rb+'), features='html.parser', )
 # print(soup.span)
 # for result in soup.children:
 #     print(result)
